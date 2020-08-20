@@ -14,7 +14,7 @@ use Log::ger::Screen;
 $/ = "";
 my $num = 1;
 while (my $para = <>) {
-    unless ($para =~ /\A([0-9][^\R]+)(.+)/s) {
+    unless ($para =~ /\A([0-9][^\n]+)(.+)/s) {
         log_trace "Paragraph does not begin with a digit, skipping";
         next;
     }
@@ -28,6 +28,7 @@ while (my $para = <>) {
 }
 
 # ABSTRACT: Convert .vtt to .srt
+# PODNAME:
 
 =head1 SYNOPSIS
 

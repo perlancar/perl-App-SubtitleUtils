@@ -6,7 +6,7 @@ package App::SubtitleUtils;
 # VERSION
 
 1;
-#ABSTRACT: Utilities related to subtitles
+#ABSTRACT: Utilities related to video subtitles
 
 =head1 DESCRIPTION
 

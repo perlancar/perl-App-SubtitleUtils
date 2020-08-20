@@ -1,0 +1,37 @@
+#!perl
+
+# AUTHORITY
+# DATE
+# DIST
+# VERSION
+
+use 5.010001;
+use strict;
+use warnings;
+use Log::ger;
+use Log::ger::Screen;
+
+$/ = "";
+my $num = 1;
+while (my $para = <>) {
+    unless ($para =~ /\A([0-9][^\R]+)(.+)/s) {
+        log_trace "Paragraph does not begin with a digit, skipping";
+        next;
+    }
+
+    my ($first_line, $subseq_lines) = ($1, $2);
+
+    $first_line =~ s/[.]/,/g;
+
+    print $num, "\n", $first_line, $subseq_lines;
+    $num++;
+}
+
+# ABSTRACT: Convert .vtt to .srt
+
+=head1 SYNOPSIS
+
+ % vtt2srt < INPUT.vtt > OUTPUT.srt
+
+
+=head1 cut

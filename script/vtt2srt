@@ -35,4 +35,4 @@ while (my $para = <>) {
  % vtt2srt < INPUT.vtt > OUTPUT.srt
 
 
-=head1 cut
+=cut

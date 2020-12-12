@@ -77,12 +77,12 @@ sub app {
             my $secs1 = hms2secs($hms1);
             my $secs2 = hms2secs($hms2);
             if ($secs1 >= $part*$part_dur) {
-                $secs1 -= $part*$part_dur;
-                $secs2 -= $part*$part_dur;
                 $part++;
                 $code_set_output_file->();
                 $num_offset = $num-1;
             }
+            $secs1 -= ($part-1)*$part_dur;
+            $secs2 -= ($part-1)*$part_dur;
             $num -= $num_offset;
             print $fh $num, "\n",
                 secs2hms($secs1), " --> ", secs2hms($secs2), "\n",

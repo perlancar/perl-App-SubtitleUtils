@@ -1,0 +1,34 @@
+#!perl
+
+# AUTHORITY
+# DATE
+# DIST
+# VERSION
+
+die "Usage: $0 factor FILE\nFactor of 2.0 equals to twice longer.\n" unless @ARGV >= 1;
+$_ = shift @ARGV;
+if (/^\d+(\.\d*)?$/) {
+	$f = $_;
+} else {
+	die "FATAL: Invalid factor `$_'\n";
+}
+
+while (<>) {
+	($frame1, $frame2, $text) = /\{(\d+)\}\{(\d+)\}(.*)/ or
+		die "FATAL: Invalid entry in line $.: $_\n";
+	printf "{%d}{%d}%s\n", $frame1*$f, $frame2*$f, $text;
+}
+
+# ABSTRACT:
+# PODNAME:
+
+=head1 SYNOPSIS
+
+ % subscale <factor> <FILE>
+
+
+=head1 HISTORY
+
+2003-03-21 - first written
+
+2021-01-08 - put in CPAN distribution App-SubtitleUtils

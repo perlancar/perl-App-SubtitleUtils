@@ -11,6 +11,12 @@ use warnings;
 use Log::ger;
 use Log::ger::Screen;
 
+sub _strip {
+    my $str = shift;
+    $str =~ s/<.+?>//g;
+    $str;
+}
+
 $/ = "";
 my $num = 1;
 while (my $para = <>) {
@@ -23,7 +29,7 @@ while (my $para = <>) {
 
     $first_line =~ s/[.]/,/g;
 
-    print $num, "\n", $first_line, $subseq_lines;
+    print $num, "\n", _strip($first_line), _strip($subseq_lines);
     $num++;
 }
 

@@ -11,7 +11,9 @@ use Exporter qw(import);
 # VERSION
 
 our @EXPORT_OK = qw(
-                       parse_srt
+                       srtparse
+                       srtcheck
+                       srtdump
                        srtcombinetext
                );
 

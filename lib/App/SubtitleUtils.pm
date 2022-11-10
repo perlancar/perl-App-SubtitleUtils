@@ -242,7 +242,7 @@ sub srtcombinetext {
                     }
                     no warnings 'once';
                     local $main::entry = $parsed[$j]{entries}[$i];
-                    local $main::j = $j;
+                    local $main::idx = $j;
                     $code->();
                 }
                 $merged_text .= $_;

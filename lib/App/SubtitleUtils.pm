@@ -153,6 +153,13 @@ sub srtdump {
 $SPEC{srtcombinetext} = {
     v => 1.1,
     summary => 'Combine the text of two or more subtitle files (e.g. for different languages) into one',
+    description => <<'_',
+
+All the subtitle files must contain the same number of entries, with each entry
+containing the exact timestamps. The default is just to concatenate the text of
+each entry together, but you can customize each text using the `--eval` option.
+
+_
     args => {
         filenames => {
             schema => ['array*', of=>'filename*', min_len=>2],
@@ -166,9 +173,9 @@ $SPEC{srtcombinetext} = {
             cmdline_aliases => {e=>{}},
             description => <<'_',
 
-This code will be evaluated for every text of each entry of each SRT. `$_` will
-be set to the text, `$entry` to the entry hash, `$j` to the index of the files
-(starts at 0).
+This code will be evaluated for every text of each entry of each SRT, in the
+`main` package. `$_` will be set to the text, `$main::entry` to the entry hash,
+`$main::idx` to the index of the files (starts at 0).
 
 The code is expected to modify `$_`.
 
@@ -178,8 +185,14 @@ _
     examples => [
         {
             summary => 'Display English and French subtitles together',
+            description => <<'_',
+
+The English text is shown at the top, then a blank line (`<i></i>`), followed by
+the French text in italics.
+
+_
             src_plang => 'bash',
-            src => q|[[prog]] azur-et-asmar.en.srt azur-et-asmar.fr.srt -e 'if ($main::j) { chomp; $_ = "<i></i>\n<i>$_</i>\n" }'|,
+            src => q|[[prog]] azur-et-asmar.en.srt azur-et-asmar.fr.srt -e 'if ($main::idx) { chomp; $_ = "<i></i>\n<i>$_</i>\n" }'|,
             test => 0,
             'x.doc.show_result' => 0,
         },

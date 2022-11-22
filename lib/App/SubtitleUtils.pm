@@ -35,6 +35,7 @@ $SPEC{srtparse} = {
     args => {
         filename => {
             schema => 'filename*',
+            'x.completion' => [filename => {file_ext_filter=>qr/\.srt$/i}],
             pos => 0,
         },
         string => {
@@ -103,6 +104,7 @@ $SPEC{srtcheck} = {
     args => {
         filename => {
             schema => 'filename*',
+            'x.completion' => [filename => {file_ext_filter=>qr/\.srt$/i}],
             req => 1,
             pos => 0,
         },
@@ -163,6 +165,7 @@ _
     args => {
         filenames => {
             schema => ['array*', of=>'filename*', min_len=>2],
+            'x.element_completion' => [filename => {file_ext_filter=>qr/\.srt$/i}],
             req => 1,
             pos => 0,
             slurpy => 1,
@@ -184,7 +187,7 @@ _
     },
     examples => [
         {
-            summary => 'Display English and French subtitles together',
+            summary => 'Display English and French subtitles together (1)',
             description => <<'_',
 
 The English text is shown at the top, then a blank line (`<i></i>`), followed by
@@ -195,6 +198,21 @@ _
             src => q|[[prog]] azur-et-asmar.en.srt azur-et-asmar.fr.srt -e 'if ($main::idx) { chomp; $_ = "<i></i>\n<i>$_</i>\n" }'|,
             test => 0,
             'x.doc.show_result' => 0,
+        },
+        {
+            summary => 'Display English and French subtitles together (2)',
+            description => <<'_',
+
+Like the previous examaple, we show the English text at the top, then a blank
+line (`<i></i>`), followed by the French text in italics. This time we use a
+provided wrapper.
+
+_
+            src_plang => 'bash',
+            src => q|srtcombine2text azur-et-asmar.en.srt azur-et-asmar.fr.srt|,
+            test => 0,
+            'x.doc.show_result' => 0,
+
         },
     ],
 };
@@ -259,6 +277,57 @@ sub srtcombinetext {
     }
 
     srtdump(parsed => $merged);
+}
+
+$SPEC{srtcombine2text} = {
+    v => 1.1,
+    summary => 'Combine the text of two or more subtitle files (e.g. for different languages) into one',
+    description => <<'_',
+
+This is a thin wrapper for <prog:srtcombinetext>, for convenience. This:
+
+    % srtcombine2text file1.srt file2.srt
+
+is equivalent to:
+
+    % srtcombinetext file1.srt file2.srt -e 'if ($main::idx) { chomp; $_ = "<i></i>\n<i>$_</i>\n" }'
+
+For more customization, use *srtcombinetext* directly.
+
+_
+    args => {
+        filename1 => {
+            schema => 'filename*',
+            'x.completion' => [filename => {file_ext_filter=>qr/\.srt$/i}],
+            req => 1,
+            pos => 0,
+        },
+        filename2 => {
+            schema => 'filename*',
+            'x.completion' => [filename => {file_ext_filter=>qr/\.srt$/i}],
+            req => 1,
+            pos => 0,
+        },
+    },
+    examples => [
+        {
+            summary => 'Display English and French subtitles together (2)',
+            src_plang => 'bash',
+            src => q|[[prog]] azur-et-asmar.en.srt azur-et-asmar.fr.srt|,
+            test => 0,
+            'x.doc.show_result' => 0,
+
+        },
+    ],
+};
+sub srtcombine2text {
+    my %args = @_;
+    my $filename1 = delete $args{filename1};
+    my $filename2 = delete $args{filename2};
+    srtcombinetext(
+        filenames => [$filename1, $filename2],
+        eval => q|if ($main::idx) { chomp; $_ = "<i></i>\n<i>$_</i>\n" }|,
+    );
 }
 
 1;

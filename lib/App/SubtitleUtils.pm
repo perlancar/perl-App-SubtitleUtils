@@ -311,7 +311,7 @@ _
     },
     examples => [
         {
-            summary => 'Display English and French subtitles together (2)',
+            summary => 'Display English and French subtitles together',
             src_plang => 'bash',
             src => q|[[prog]] azur-et-asmar.en.srt azur-et-asmar.fr.srt|,
             test => 0,

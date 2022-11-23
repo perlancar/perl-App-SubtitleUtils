@@ -5,7 +5,7 @@
 
 0.010   2022-11-10  Released-By: PERLANCAR; Urgency: medium
 
-        - [cmd srtcombinetext] Fix variable idx for eval code.
+        - [cli srtcombinetext] Fix variable idx for eval code.
 
 
 0.009   2022-11-10  Released-By: PERLANCAR; Urgency: low

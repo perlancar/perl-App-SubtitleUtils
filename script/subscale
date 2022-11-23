@@ -21,7 +21,7 @@ while (<>) {
 	printf "{%d}{%d}%s\n", $frame1*$f, $frame2*$f, $text;
 }
 
-# ABSTRACT:
+# ABSTRACT: Scale time in .sub subtitle
 # PODNAME:
 
 =head1 SYNOPSIS

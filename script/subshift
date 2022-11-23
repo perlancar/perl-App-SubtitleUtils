@@ -22,7 +22,7 @@ while (<>) {
 	printf "{%d}{%d}%s\n", $frame1+$frames, $frame2+$frames, $text;
 }
 
-# ABSTRACT:
+# ABSTRACT: Shift timestamps in .sub subtitle
 # PODNAME:
 
 =head1 SYNOPSIS

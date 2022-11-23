@@ -281,7 +281,7 @@ sub srtcombinetext {
 
 $SPEC{srtcombine2text} = {
     v => 1.1,
-    summary => 'Combine the text of two or more subtitle files (e.g. for different languages) into one',
+    summary => 'Combine the text of two subtitle files (e.g. for different languages) into one',
     description => <<'_',
 
 This is a thin wrapper for <prog:srtcombinetext>, for convenience. This:

@@ -18,7 +18,7 @@ my $hms_re_catch = qr/(\d\d?):(\d\d?):(\d\d?)(?:,(\d{1,3}))?/;
 sub hms2secs { local $_=shift; /^$hms_re_catch$/ or return; $1*3600+$2*60+$3+$4*0.001 }
 sub secs2hms { local $_=shift; /^$secs_re$/ or return "00:00:00,000"; my $ms=1000*($_-int($_)); $_=int($_); my $s=$_%60; $_-=$s; $_/=60; my $m=$_%60; $_-=$m; $_/=60; sprintf "%02d:%02d:%02d,%03d",$_,$m,$s,$ms }
 
-$SPEC{app} = {
+$SPEC{srtsplit} = {
     v => 1.1,
     summary => 'Split .srt by duration',
     args => {
@@ -38,7 +38,7 @@ $SPEC{app} = {
         },
     },
 };
-sub app {
+sub srtsplit {
     require POSIX;
 
     my %args = @_;
@@ -97,7 +97,7 @@ sub app {
 }
 
 Perinci::CmdLine::Any->new(
-    url => '/main/app',
+    url => '/main/srtsplit',
 )->run;
 
 # ABSTRACT:

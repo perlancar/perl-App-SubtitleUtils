@@ -306,7 +306,7 @@ _
             schema => 'filename*',
             'x.completion' => [filename => {file_ext_filter=>qr/\.srt$/i}],
             req => 1,
-            pos => 0,
+            pos => 1,
         },
     },
     examples => [

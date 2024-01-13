@@ -1,0 +1,101 @@
+#!perl
+
+use 5.010001;
+use strict;
+use warnings;
+use Log::ger;
+
+use File::chdir;
+use Perinci::CmdLine::Any;
+use Perinci::Object;
+
+# AUTHORITY
+# DATE
+# DIST
+# VERSION
+
+our %SPEC;
+
+$SPEC{rename_subtitle_files_like_their_movie_files} = {
+    v => 1.1,
+    summary => 'Rename subtitle files like their movie files',
+    description => <<'MARKDOWN',
+
+For every given subtitle file, find the video file in the same directory with
+the closest name and rename the subtitle so it matches the video file.
+
+MARKDOWN
+    args => {
+        subtitle_files => {
+            'x.name.is_plural' => 1,
+            'x.name.singular' => 'subtitle_file',
+            schema =>  ['array*', of=>'filename*'],
+            req => 1,
+            pos => 0,
+            slurpy => 1,
+        },
+    },
+    features => {
+        dry_run => 1,
+    },
+};
+sub rename_subtitle_files_like_their_movie_files {
+    require File::Basename;
+    require Filename::Video;
+    require Sort::Sub;
+    require Sort::Sub::by_similarity_using_editdist; # for scan_prereqs
+
+    my %args = @_;
+    my $subtitle_files = $args{subtitle_files};
+
+    my $envres = envresmulti();
+    my $i = 0;
+    for my $subtitle_file (@$subtitle_files) {
+        $i++;
+        my $dir = File::Basename::dirname($subtitle_file);
+        my @movie_files = do {
+            local $CWD = $dir;
+            grep { $_ } map { Filename::Video::check_video_filename(filename=>$_) } glob("*");
+        };
+        unless (@movie_files) {
+            log_warn "Can't rename $subtitle_file: Can't find movie files in directory $dir";
+            $envres->add_result(412, "Precondition failed", {item_id=>$subtitle_file});
+            next;
+        }
+        my $sorter = Sort::Sub::get_sorter('by_similarity_using_editdist', {string=>$subtitle_file});
+        @movie_files = sort { $sorter->($a->{filename_without_suffix},$b->{filename_without_suffix}) } @movie_files;
+        my $newname = $movie_files[0]{filename_without_suffix};
+
+        my $subtitle_suffix = $subtitle_file;
+        unless ($subtitle_suffix =~ s/.+(\.\w+\z)/$1/) { $subtitle_suffix = "" }
+        my $new_subtitle_file = "$newname$subtitle_suffix";
+
+        # XXX check overwriting existing file
+        if ($args{-dry_run}) {
+            log_info "[DRY_RUN] [#%d/%d] Renaming '%s' -> '%s' ...", $i, scalar(@$subtitle_files), $subtitle_file, $new_subtitle_file;
+            $envres->add_result(200, "OK (dry-run)", {item_id=>$subtitle_file});
+        } else {
+            log_info "[#%d/%d] Renaming '%s' -> '%s' ...", $i, scalar(@$subtitle_files), $subtitle_file, $new_subtitle_file;
+            if (rename $subtitle_file, $new_subtitle_file) {
+                $envres->add_result(200, "OK (dry-run)", {item_id=>$subtitle_file});
+            } else {
+                log_error "Can't rename $subtitle_file -> $new_subtitle_file: $!";
+                $envres->add_result(200, "Fail: $!", {item_id=>$subtitle_file});
+            }
+        }
+    }
+    $envres->as_struct;
+}
+
+Perinci::CmdLine::Any->new(
+    url => '/main/rename_subtitle_files_like_their_movie_files',
+    log => 1,
+    default_log_level => 'info',
+)->run;
+
+# PODNAME:
+# ABSTRACT:
+
+=head1 DESCRIPTION
+
+=cut

@@ -47,4 +47,4 @@ B<youtube-dl> downloads subtitles in .vtt format by default, but can be
 instructed to download and/or convert subtitles to .srt format (see options:
 C<--sub-format vtt>, C<--convert-subtitles srt>).
 
-=head1 cut
+=cut
